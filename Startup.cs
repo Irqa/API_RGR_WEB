@@ -32,7 +32,7 @@ namespace API
             services.AddSingleton<SaladService>();
             services.AddSingleton<IngredientService>();
             services.AddSingleton<OrderService>();
-            services.AddSingleton<OrderItemService>();
+            //services.AddSingleton<OrderItemService>();
 
             services.AddControllers();
         }

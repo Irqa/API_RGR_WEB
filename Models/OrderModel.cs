@@ -41,6 +41,9 @@ namespace API.Models
 
         [BsonElement("createdAt")]
         public DateTime CreatedAt { get; set; }
+
+        [BsonElement("items")]
+        public List<OrderItem> Items { get; set; }
     }
 
 }

@@ -1,9 +1,11 @@
 ﻿using API.Models;
 using API.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,13 +24,20 @@ namespace API.Controllers
         private readonly GroceryService _restaurantService;
         private readonly SaladService _saladService;
         private readonly OrderService _orderService;
-        private readonly OrderItemService _orderItemService;
+        //private readonly OrderItemService _orderItemService;
         private readonly IngredientService _ingredientService;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, GroceryService restaurantService)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger
+            , GroceryService restaurantService
+            , SaladService saladService
+            , OrderService orderService
+            , IngredientService ingredientService)
         {
             _logger = logger;
             _restaurantService = restaurantService;
+            _saladService = saladService;
+            _orderService = orderService;
+            _ingredientService = ingredientService;
         }
 
         [HttpGet("groceries/{id}")]
@@ -57,17 +66,28 @@ namespace API.Controllers
         }
 
         [HttpPost("salads")]
-        public async Task<Salad> PostSalads([FromBody]Salad salad)
+        public async Task<Salad> PostSalads([FromBody]SaladDto saladDto)
         {
+            var salad = new Salad
+            {
+                Name = saladDto.Name,
+                IsFromConstructor = saladDto.IsFromConstructor,
+                Ingredients = saladDto.Ingredients
+            };
+            using(var ms = new MemoryStream())
+            {
+                saladDto.Image.CopyTo(ms);
+                salad.Image = Convert.ToBase64String(ms.ToArray());
+            }
             await _saladService.Create(salad);
             return salad;
         }
 
 
         [HttpGet("salads")]
-        public async Task<List<Grocery>> GetSalads()
+        public async Task<List<Salad>> GetSalads()
         {
-            return await _restaurantService.GetAll();
+            return await _saladService.GetAll();
         }
 
 
