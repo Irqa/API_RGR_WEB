@@ -53,7 +53,7 @@ namespace API.Controllers
         }
         
         [HttpPost("groceries")]
-        public async Task<Grocery> PostGroceries([FromBody]Grocery grocery)
+        public async Task<Grocery> PostGroceries([FromForm]Grocery grocery)
         {
             await _restaurantService.Create(grocery);
             return grocery;
@@ -66,7 +66,7 @@ namespace API.Controllers
         }
 
         [HttpPost("salads")]
-        public async Task<Salad> PostSalads([FromBody]SaladDto saladDto)
+        public async Task<Salad> PostSalads([FromForm]SaladDto saladDto)
         {
             var salad = new Salad
             {
